@@ -5,7 +5,7 @@
 # -------------------------------
 title = AnyLoad
 package.name = anyload
-package.domain = com.nirob
+package.domain = com.nexvexlabs
 source.dir = .
 source.include_exts = py,png,jpg,kv,atlas,ttf,db,mp3,json
 version = 1.1.0
@@ -33,7 +33,7 @@ presplash.filename = assets/splash.png
 # -------------------------------
 
 # ডাউনলোডার অ্যাপের জন্য প্রয়োজনীয় সব পারমিশন
-android.permissions = INTERNET,READ_EXTERNAL_STORAGE,WRITE_EXTERNAL_STORAGE,MANAGE_EXTERNAL_STORAGE
+android.permissions = INTERNET, READ_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE, MANAGE_EXTERNAL_STORAGE, READ_MEDIA_VIDEO, READ_MEDIA_AUDIO, POST_NOTIFICATIONS
 
 # বিল্ড করার সময় অটোমেটিক লাইসেন্স একসেপ্ট করবে (API 33 ফিক্স)
 android.accept_sdk_license = True
