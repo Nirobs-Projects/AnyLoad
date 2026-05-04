@@ -1,0 +1,32 @@
+Kivy==2.3.1
+https://github.com/kivymd/KivyMD/archive/master.zip
+yt-dlp
+pytube
+mutagen
+Pillow
+certifi
+urllib3
+idna
+charset-normalizer
+cython
+
+# --- Kivy Framework & UI ---
+Kivy==2.3.1
+https://github.com/kivymd/KivyMD/archive/master.zip
+
+# --- Core Download Engines ---
+yt-dlp
+pytube
+
+# --- Media Processing & Metadata ---
+mutagen
+Pillow
+
+# --- Networking & Security ---
+certifi
+urllib3
+idna
+charset-normalizer
+
+# (Note: 'pyjnius' is omitted here because it causes errors on Linux/PC. 
+# Buildozer will automatically install it for Android during the build process.)

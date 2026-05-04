@@ -1,0 +1,596 @@
+#:import os os
+
+<ActionCard>:
+    orientation: "horizontal"
+    padding: ["15dp", "10dp"]
+    size_hint_y: None
+    height: "75dp"
+    md_bg_color: 0.08, 0.08, 0.08, 1
+    radius: 20
+    ripple_behavior: True
+    elevation: 1
+    spacing: "15dp"
+    MDIcon:
+        icon: root.icon_name
+        theme_text_color: "Custom"
+        text_color: 1, 1, 1, 1
+        pos_hint: {"center_y": .5}
+        font_size: "28sp"
+    MDLabel:
+        text: root.title
+        font_name: "Roboto" # বাংলা ফন্ট
+        theme_text_color: "Custom"
+        text_color: 1, 1, 1, 1
+        style: "TitleMedium"
+        bold: True
+    MDIconButton:
+        icon: "chevron-right"
+        theme_text_color: "Custom"
+        text_color: 0, 0.8, 0.7, 1
+        md_bg_color: 0.15, 0.15, 0.15, 1
+        pos_hint: {"center_y": .5}
+
+<TaskCard>:
+    orientation: "vertical"
+    size_hint_y: None
+    height: "85dp" # সুপার স্লিম
+    radius: 12
+    md_bg_color: 0.12, 0.12, 0.12, 1
+    padding: ["12dp", "8dp"]
+    spacing: "4dp"
+    MDBoxLayout:
+        orientation: "horizontal"
+        size_hint_y: None
+        height: "28dp"
+        MDLabel:
+            text: root.filename
+            font_name: "Roboto" # বাংলা ফন্ট
+            theme_text_color: "Custom"
+            text_color: 1, 1, 1, 1
+            font_size: "13sp"
+            shorten: True
+            shorten_from: "right"
+            bold: True
+        MDIconButton:
+            id: pause_button
+            icon: "play" if root.is_paused else "pause"
+            theme_icon_color: "Custom"
+            icon_color: 0, 0.8, 0.7, 1
+            icon_size: "20sp"
+            pos_hint: {"center_y": .5}
+            size_hint_x: None
+            width: "36dp"
+            on_release: root.toggle_pause()
+        MDIconButton:
+            icon: "close"
+            theme_icon_color: "Custom"
+            icon_color: 0.8, 0.2, 0.2, 1
+            icon_size: "20sp"
+            pos_hint: {"center_y": .5}
+            size_hint_x: None
+            width: "36dp"
+            on_release: root.cancel_task()
+    MDBoxLayout:
+        orientation: "horizontal"
+        size_hint_y: None
+        height: "16dp"
+        MDLabel:
+            text: f"{root.progress_value:.1f}%"
+            font_name: "Roboto"
+            theme_text_color: "Custom"
+            text_color: 0, 0.8, 0.7, 1
+            font_size: "11sp"
+        MDLabel:
+            text: root.total_size
+            font_name: "Roboto"
+            theme_text_color: "Custom"
+            text_color: 0, 0.8, 0.7, 1
+            font_size: "11sp"
+            halign: "right"
+    MDLinearProgressIndicator:
+        value: root.progress_value
+        color: 0, 0.8, 0.7, 1
+        size_hint_y: None
+        height: "3dp"
+    MDLabel:
+        text: root.status_text
+        font_name: "Roboto" # বাংলা ফন্ট
+        theme_text_color: "Secondary"
+        font_size: "11sp"
+        size_hint_y: None
+        height: "16dp"
+
+<LibraryCard>:
+    orientation: "vertical"
+    size_hint_y: None
+    height: "210dp"
+    md_bg_color: 0.1, 0.1, 0.1, 1
+    radius: 15
+    ripple_behavior: True
+    padding: "2dp"
+    FitImage:
+        source: root.thumbnail_path
+        radius:[15, 15, 0, 0]
+        size_hint_y: 0.5
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: "8dp"
+        spacing: "2dp"
+        size_hint_y: 0.5
+        MDLabel:
+            text: root.filename
+            font_name: "Roboto" # বাংলা ফন্ট
+            style: "LabelSmall"
+            shorten: True
+            shorten_from: "right"
+            theme_text_color: "Custom"
+            text_color: 1, 1, 1, 1
+        MDBoxLayout:
+            orientation: "horizontal"
+            spacing: "5dp"
+            MDIconButton:
+                icon: "play-circle-outline"
+                on_release: root.play_media()
+                theme_icon_color: "Custom"
+                icon_color: 0, 0.8, 0.7, 1
+                icon_size: "18sp"
+            MDIconButton:
+                icon: "dots-vertical"
+                on_release: app.open_library_menu(root)
+                theme_icon_color: "Custom"
+                icon_color: 1, 1, 1, 1
+                icon_size: "18sp"
+
+MDBoxLayout:
+    orientation: 'vertical'
+    md_bg_color: 0, 0, 0, 1
+
+    MDBoxLayout:
+        size_hint_y: None
+        height: "65dp"
+        padding: ["10dp", 0]
+        md_bg_color: 0, 0, 0, 1
+        MDIconButton:
+            icon: "menu"
+            theme_text_color: "Custom"
+            text_color: 1, 1, 1, 1
+            pos_hint: {"center_y": .5}
+        MDLabel:
+            text: "AnyLoad"
+            font_name: "Roboto"
+            halign: "center"
+            bold: True
+            style: "TitleLarge"
+            theme_text_color: "Custom"
+            text_color: 1, 1, 1, 1
+            pos_hint: {"center_y": .5}
+        MDIconButton:
+            icon: "cog-outline"
+            theme_text_color: "Custom"
+            text_color: 1, 1, 1, 1
+            pos_hint: {"center_y": .5}
+
+    MDScreenManager:
+        id: screen_manager
+        
+        MDScreen:
+            name: "home"
+            MDScrollView:
+                MDBoxLayout:
+                    orientation: 'vertical'
+                    padding:["20dp", "10dp", "20dp", "20dp"]
+                    spacing: "15dp"
+                    adaptive_height: True
+                    MDBoxLayout:
+                        orientation: 'vertical'
+                        size_hint_y: None
+                        height: "120dp" if os.path.exists("assets/logo.png") else "20dp"
+                        Image:
+                            source: "assets/logo.png" if os.path.exists("assets/logo.png") else ""
+                            opacity: 1 if os.path.exists("assets/logo.png") else 0
+                    MDCard:
+                        size_hint_y: None
+                        height: "55dp"
+                        radius: 25
+                        md_bg_color: 0.1, 0.1, 0.1, 1
+                        line_color: 0.2, 0.2, 0.2, 1
+                        padding: ["10dp", 0]
+                        elevation: 0
+                        TextInput:
+                            id: url_input
+                            hint_text: "Paste video link here..."
+                            font_name: "Roboto" # বাংলা ফন্ট
+                            background_color: 0, 0, 0, 0
+                            foreground_color: 1, 1, 1, 1
+                            cursor_color: 0, 0.8, 0.7, 1
+                            multiline: False
+                            pos_hint: {"center_y": .5}
+                            font_size: "16sp"
+                            hint_text_color: 0.5, 0.5, 0.5, 1
+                            padding:["10dp", (self.height - self.line_height) / 2]
+                        MDIconButton:
+                            icon: "content-paste"
+                            theme_text_color: "Custom"
+                            text_color: 0, 0.8, 0.7, 1
+                            pos_hint: {"center_y": .5}
+                            on_release: app.paste_from_clipboard()
+                    Widget:
+                        size_hint_y: None
+                        height: "5dp"
+                    ActionCard:
+                        title: "Auto Best Quality"
+                        icon_name: "flash"
+                    ActionCard:
+                        title: "Choose Quality Manually"
+                        icon_name: "format-list-bulleted"
+                    ActionCard:
+                        title: "Auto Best + Bangla Sub"
+                        icon_name: "closed-caption"
+                    ActionCard:
+                        title: "Audio Only (MP3)"
+                        icon_name: "music-note"
+                    ActionCard:
+                        title: "Playlist Download"
+                        icon_name: "playlist-play"
+
+        MDScreen:
+            name: "quality_select"
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: "20dp"
+                spacing: "20dp"
+                MDBoxLayout:
+                    size_hint_y: None
+                    height: "50dp"
+                    MDIconButton:
+                        icon: "arrow-left"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                        on_release: screen_manager.current = "home"
+                MDLabel:
+                    text: "Select Video Quality"
+                    font_name: "Roboto"
+                    halign: "center"
+                    style: "TitleLarge"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    size_hint_y: None
+                    height: "40dp"
+                MDScrollView:
+                    MDBoxLayout:
+                        orientation: "vertical"
+                        spacing: "15dp"
+                        padding: ["20dp", 0]
+                        adaptive_height: True
+                        MDButton:
+                            style: "outlined"
+                            pos_hint: {"center_x": .5}
+                            on_release: app.start_manual_download("8K")
+                            MDButtonText:
+                                text: "8K (Ultra HD+)"
+                                font_name: "Roboto"
+                        MDButton:
+                            style: "outlined"
+                            pos_hint: {"center_x": .5}
+                            on_release: app.start_manual_download("4K")
+                            MDButtonText:
+                                text: "4K (Ultra HD)"
+                                font_name: "Roboto"
+                        MDButton:
+                            style: "outlined"
+                            pos_hint: {"center_x": .5}
+                            on_release: app.start_manual_download("1080p")
+                            MDButtonText:
+                                text: "1080p (Full HD)"
+                                font_name: "Roboto"
+                        MDButton:
+                            style: "outlined"
+                            pos_hint: {"center_x": .5}
+                            on_release: app.start_manual_download("720p")
+                            MDButtonText:
+                                text: "720p (HD)"
+                                font_name: "Roboto"
+                        MDButton:
+                            style: "outlined"
+                            pos_hint: {"center_x": .5}
+                            on_release: app.start_manual_download("480p")
+                            MDButtonText:
+                                text: "480p (SD)"
+                                font_name: "Roboto"
+                        MDButton:
+                            style: "outlined"
+                            pos_hint: {"center_x": .5}
+                            on_release: app.start_manual_download("360p")
+                            MDButtonText:
+                                text: "360p (Low)"
+                                font_name: "Roboto"
+
+        MDScreen:
+            name: "tasks"
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: "20dp"
+                spacing: "15dp"
+                MDLabel:
+                    text: "Active Downloads"
+                    font_name: "Roboto"
+                    theme_text_color: "Custom"
+                    text_color: 1, 1, 1, 1
+                    bold: True
+                    adaptive_height: True
+                MDScrollView:
+                    MDBoxLayout:
+                        id: task_container
+                        orientation: 'vertical'
+                        adaptive_height: True
+                        spacing: "15dp"
+                        MDLabel:
+                            id: empty_task_label
+                            text: "No active downloads right now"
+                            font_name: "Roboto"
+                            theme_text_color: "Hint"
+                            halign: "center"
+                            style: "BodyMedium"
+
+        MDScreen:
+            name: "library"
+            MDBoxLayout:
+                orientation: 'vertical'
+                MDBoxLayout:
+                    size_hint_y: None
+                    height: "50dp"
+                    md_bg_color: 0.05, 0.05, 0.05, 1
+                    MDButton:
+                        style: "text"
+                        on_release: lib_sm.current = "videos_tab"
+                        pos_hint: {"center_y": .5}
+                        MDButtonText:
+                            text: "VIDEOS"
+                            font_name: "Roboto"
+                            theme_text_color: "Custom"
+                            text_color: (0, 0.8, 0.7, 1) if lib_sm.current == "videos_tab" else (0.5, 0.5, 0.5, 1)
+                    MDButton:
+                        style: "text"
+                        on_release: lib_sm.current = "audio_tab"
+                        pos_hint: {"center_y": .5}
+                        MDButtonText:
+                            text: "AUDIO"
+                            font_name: "Roboto"
+                            theme_text_color: "Custom"
+                            text_color: (0, 0.8, 0.7, 1) if lib_sm.current == "audio_tab" else (0.5, 0.5, 0.5, 1)
+                    MDButton:
+                        style: "text"
+                        on_release: lib_sm.current = "playlist_tab"
+                        pos_hint: {"center_y": .5}
+                        MDButtonText:
+                            text: "PLAYLISTS"
+                            font_name: "Roboto"
+                            theme_text_color: "Custom"
+                            text_color: (0, 0.8, 0.7, 1) if lib_sm.current == "playlist_tab" else (0.5, 0.5, 0.5, 1)
+
+                MDScreenManager:
+                    id: lib_sm
+                    MDScreen:
+                        name: "videos_tab"
+                        RecycleView:
+                            id: video_rv
+                            viewclass: 'LibraryCard'
+                            RecycleGridLayout:
+                                cols: 2
+                                default_size: None, dp(210)
+                                default_size_hint: 1, None
+                                size_hint_y: None
+                                height: self.minimum_height
+                                padding: "15dp"
+                                spacing: "15dp"
+                    MDScreen:
+                        name: "audio_tab"
+                        RecycleView:
+                            id: audio_rv
+                            viewclass: 'LibraryCard'
+                            RecycleGridLayout:
+                                cols: 2
+                                default_size: None, dp(210)
+                                default_size_hint: 1, None
+                                size_hint_y: None
+                                height: self.minimum_height
+                                padding: "15dp"
+                                spacing: "15dp"
+                    MDScreen:
+                        name: "playlist_tab"
+                        MDScrollView:
+                            MDGridLayout:
+                                id: playlist_container
+                                cols: 1
+                                padding: "15dp"
+                                spacing: "15dp"
+                                adaptive_height: True
+        
+        MDScreen:
+            name: "vault"
+            # এখানে পুরো স্ক্রিনটি একটি মেইন বক্সের ভেতর
+            MDBoxLayout:
+                orientation: 'vertical'
+                padding: "10dp"
+
+                # ১. পিন প্যাড বক্স (লক অবস্থায় এটি দেখাবে)
+                MDBoxLayout:
+                    id: pin_pad_box
+                    orientation: 'vertical'
+                    opacity: 1
+                    disabled: False
+                    spacing: "10dp"
+                    padding: ["10dp", "20dp"]
+
+                    MDIcon:
+                        id: vault_status_icon
+                        icon: "shield-lock-outline"
+                        font_size: "60sp"
+                        pos_hint: {"center_x": .5}
+                        theme_text_color: "Custom"
+                        text_color: 0, 0.8, 0.7, 1
+                    MDLabel:
+                        id: vault_msg
+                        text: "Enter PIN to Unlock"
+                        halign: "center"
+                        style: "TitleMedium"
+                        theme_text_color: "Custom"
+                        text_color: 1, 1, 1, 1
+                    MDLabel:
+                        id: pin_display
+                        text: "****"
+                        halign: "center"
+                        font_size: "32sp"
+                        bold: True
+                        size_hint_y: None
+                        height: "50dp"
+                    MDGridLayout:
+                        cols: 3
+                        spacing: "10dp"
+                        padding: "10dp"
+                        size_hint: (None, None)
+                        size: (dp(250), dp(250))
+                        pos_hint: {"center_x": .5}
+                        MDButton:
+                            style: "outlined"
+                            on_release: app.vault_pin_input("1")
+                            MDButtonText:
+                                text: "1"
+                        MDButton:
+                            style: "outlined"
+                            on_release: app.vault_pin_input("2")
+                            MDButtonText:
+                                text: "2"
+                        MDButton:
+                            style: "outlined"
+                            on_release: app.vault_pin_input("3")
+                            MDButtonText:
+                                text: "3"
+                        MDButton:
+                            style: "outlined"
+                            on_release: app.vault_pin_input("4")
+                            MDButtonText:
+                                text: "4"
+                        MDButton:
+                            style: "outlined"
+                            on_release: app.vault_pin_input("5")
+                            MDButtonText:
+                                text: "5"
+                        MDButton:
+                            style: "outlined"
+                            on_release: app.vault_pin_input("6")
+                            MDButtonText:
+                                text: "6"
+                        MDButton:
+                            style: "outlined"
+                            on_release: app.vault_pin_input("7")
+                            MDButtonText:
+                                text: "7"
+                        MDButton:
+                            style: "outlined"
+                            on_release: app.vault_pin_input("8")
+                            MDButtonText:
+                                text: "8"
+                        MDButton:
+                            style: "outlined"
+                            on_release: app.vault_pin_input("9")
+                            MDButtonText:
+                                text: "9"
+                        MDButton:
+                            style: "text"
+                            on_release: app.vault_pin_input("C")
+                            MDButtonText:
+                                text: "CLR"
+                        MDButton:
+                            style: "outlined"
+                            on_release: app.vault_pin_input("0")
+                            MDButtonText:
+                                text: "0"
+                        MDButton:
+                            style: "filled"
+                            on_release: app.vault_authorize()
+                            MDButtonText:
+                                text: "OK"
+
+                # ২. ভল্ট লিস্ট (আনলক হলে এটি দেখাবে)
+                RecycleView:
+                    id: vault_rv
+                    opacity: 0
+                    disabled: True
+                    viewclass: 'LibraryCard'
+                    RecycleGridLayout:
+                        cols: 2
+                        default_size: None, dp(210)
+                        size_hint_y: None
+                        height: self.minimum_height
+                        padding: "10dp"
+                        spacing: "10dp"
+
+    # BOTTOM NAVIGATION BAR
+    MDBoxLayout:
+        size_hint_y: None
+        height: "65dp"
+        md_bg_color: 0, 0, 0, 1
+        padding:["5dp", 0]
+        MDGridLayout:
+            cols: 4
+            MDRelativeLayout:
+                MDIconButton:
+                    icon: "home" if screen_manager.current in ["home", "quality_select"] else "home-outline"
+                    theme_text_color: "Custom"
+                    text_color: (0, 0.8, 0.7, 1) if screen_manager.current in["home", "quality_select"] else (0.6, 0.6, 0.6, 1)
+                    pos_hint: {"center_x": .5, "center_y": .6}
+                    on_release: screen_manager.current = "home"
+                MDLabel:
+                    text: "Home"
+                    font_name: "Roboto"
+                    halign: "center"
+                    style: "LabelSmall"
+                    theme_text_color: "Custom"
+                    text_color: (0, 0.8, 0.7, 1) if screen_manager.current in["home", "quality_select"] else (0.6, 0.6, 0.6, 1)
+                    pos_hint: {"center_x": .5, "center_y": .2}
+            MDRelativeLayout:
+                MDIconButton:
+                    icon: "download" if screen_manager.current == "tasks" else "download-outline"
+                    theme_text_color: "Custom"
+                    text_color: (0, 0.8, 0.7, 1) if screen_manager.current == "tasks" else (0.6, 0.6, 0.6, 1)
+                    pos_hint: {"center_x": .5, "center_y": .6}
+                    on_release: screen_manager.current = "tasks"
+                MDLabel:
+                    text: "Tasks"
+                    font_name: "Roboto"
+                    halign: "center"
+                    style: "LabelSmall"
+                    theme_text_color: "Custom"
+                    text_color: (0, 0.8, 0.7, 1) if screen_manager.current == "tasks" else (0.6, 0.6, 0.6, 1)
+                    pos_hint: {"center_x": .5, "center_y": .2}
+            MDRelativeLayout:
+                MDIconButton:
+                    icon: "folder-play" if screen_manager.current == "library" else "folder-play-outline"
+                    theme_text_color: "Custom"
+                    text_color: (0, 0.8, 0.7, 1) if screen_manager.current == "library" else (0.6, 0.6, 0.6, 1)
+                    pos_hint: {"center_x": .5, "center_y": .6}
+                    on_release: screen_manager.current = "library"
+                MDLabel:
+                    text: "Library"
+                    font_name: "Roboto"
+                    halign: "center"
+                    style: "LabelSmall"
+                    theme_text_color: "Custom"
+                    text_color: (0, 0.8, 0.7, 1) if screen_manager.current == "library" else (0.6, 0.6, 0.6, 1)
+                    pos_hint: {"center_x": .5, "center_y": .2}
+            MDRelativeLayout:
+                MDIconButton:
+                    icon: "shield-lock" if screen_manager.current == "vault" else "shield-lock-outline"
+                    theme_text_color: "Custom"
+                    text_color: (0, 0.8, 0.7, 1) if screen_manager.current == "vault" else (0.6, 0.6, 0.6, 1)
+                    pos_hint: {"center_x": .5, "center_y": .6}
+                    on_release: screen_manager.current = "vault"
+                MDLabel:
+                    text: "Vault"
+                    font_name: "Roboto"
+                    halign: "center"
+                    style: "LabelSmall"
+                    theme_text_color: "Custom"
+                    text_color: (0, 0.8, 0.7, 1) if screen_manager.current == "vault" else (0.6, 0.6, 0.6, 1)
+                    pos_hint: {"center_x": .5, "center_y": .2}
