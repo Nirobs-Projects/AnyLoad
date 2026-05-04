@@ -73,7 +73,7 @@ jobs:
         buildozer android debug
         
     - name: Upload APK artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: AnyLoad-v1.1.0-debug
         path: bin/*.apk
