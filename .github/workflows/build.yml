@@ -24,14 +24,14 @@ jobs:
       - name: Install Dependencies
         run: |
           sudo apt-get update
-          # libtinfo5 এর বদলে libtinfo6 এবং ncurses6 ব্যবহার করা হয়েছে
+          # libncurses6-dev এর বদলে libncurses-dev ব্যবহার করা হয়েছে যা ২৪.০৪ এ কাজ করবে
           sudo apt-get install -y build-essential libffi-dev python3-dev \
-            libssl-dev zlib1g-dev libncurses6-dev libncursesw6-dev libreadline-dev \
+            libssl-dev zlib1g-dev libncurses-dev libreadline-dev \
             libsqlite3-dev libgdbm-dev libdb5.3-dev libbz2-dev libexpat1-dev \
             liblzma-dev libffi-dev libgmp-dev unzip zip libtool autoconf automake \
             pkg-config cmake libtinfo6 expect openjdk-17-jdk
           
-          # CRITICAL FIX: Ubuntu 24.04 এ ভার্সন ৬ কে ৫ হিসেবে চালিয়ে দেওয়ার ট্রিক
+          # CRITICAL FIX: Android NDK/SDK এর জন্য পুরনো ভার্সন ৫ এর সিমলিঙ্ক তৈরি
           sudo ln -sf /usr/lib/x86_64-linux-gnu/libtinfo.so.6 /usr/lib/x86_64-linux-gnu/libtinfo.so.5
           sudo ln -sf /usr/lib/x86_64-linux-gnu/libncurses.so.6 /usr/lib/x86_64-linux-gnu/libncurses.so.5
 
@@ -42,17 +42,3 @@ jobs:
 
       - name: Install Buildozer & Cython
         run: |
-          pip install --upgrade pip
-          pip install Cython==0.29.33 buildozer
-
-      - name: Build with Buildozer
-        run: |
-          yes | buildozer android debug
-        env:
-          JAVA_HOME: /usr/lib/jvm/java-17-openjdk-amd64
-
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: AnyLoad-v${{ steps.get-date.outputs.date }}
-          path: bin/*.apk
